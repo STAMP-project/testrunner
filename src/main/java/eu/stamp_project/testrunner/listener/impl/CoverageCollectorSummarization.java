@@ -48,7 +48,11 @@ public class CoverageCollectorSummarization implements CoverageTransformer {
         final CoverageBuilder coverageBuilder = new CoverageBuilder();
         final Analyzer analyzer = new Analyzer(executionData, coverageBuilder);
         try {
-            analyzer.analyzeAll(new File(classesDirectory));
+            //TODO: change the interface to an array of URL
+            String[] paths = classesDirectory.split(File.pathSeparator);
+            for (String path : paths) {
+                analyzer.analyzeAll(new File(path));
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

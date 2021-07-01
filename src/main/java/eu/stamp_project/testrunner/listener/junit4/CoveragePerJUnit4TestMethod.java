@@ -88,7 +88,10 @@ public class CoveragePerJUnit4TestMethod extends JUnit4TestResult implements Cov
         final CoverageBuilder coverageBuilder = new CoverageBuilder();
         final Analyzer analyzer = new Analyzer(this.internalCoverage.getExecutionData(), coverageBuilder);
         try {
-            analyzer.analyzeAll(new File(this.internalCoverage.getClassesDirectory()));
+            String[] paths = this.internalCoverage.getClassesDirectory().split(File.pathSeparator);
+            for (String path : paths) {
+                analyzer.analyzeAll(new File(path));
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

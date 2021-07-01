@@ -3,13 +3,18 @@ package eu.stamp_project.testrunner.runner.coverage;
 import eu.stamp_project.testrunner.AbstractTest;
 import eu.stamp_project.testrunner.EntryPointTest;
 import eu.stamp_project.testrunner.listener.Coverage;
+import eu.stamp_project.testrunner.listener.CoveredTestResult;
+import eu.stamp_project.testrunner.listener.impl.CoverageCollectorDetailed;
+import eu.stamp_project.testrunner.listener.impl.CoverageDetailed;
 import eu.stamp_project.testrunner.listener.impl.CoverageImpl;
 import eu.stamp_project.testrunner.runner.JUnit4Runner;
 import eu.stamp_project.testrunner.runner.ParserOptions;
 import eu.stamp_project.testrunner.utils.ConstantsHelper;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import java.net.URLClassLoader;
+
+import static org.junit.Assert.*;
 
 /**
  * Created by Benjamin DANGLOT
@@ -55,4 +60,42 @@ public class JacocoRunnerTest extends AbstractTest {
         assertEquals(EntryPointTest.NUMBER_OF_INSTRUCTIONS, load.getInstructionsTotal());
         System.out.println(load.getExecutionPath());
     }
+
+    @Test
+    public void testRunCoveredTestResults() throws Exception {
+
+        /*
+            Using the api to compute the coverage on test cases
+         */
+
+        JacocoRunner runner = new JUnit4JacocoRunner(
+                "src/test/resources/test-projects/target/classes/",
+                "src/test/resources/test-projects/target/test-classes/",
+                new CoverageCollectorDetailed()
+        );
+        URLClassLoader urlloader = runner.getUrlClassloaderFromClassPath(JUNIT_CP);
+        runner.instrumentAll("src/test/resources/test-projects/target/test-classes/");
+
+        CoveredTestResult coveredTestResult = runner.run(
+                new CoverageCollectorDetailed(),
+                urlloader,
+                "src/test/resources/test-projects/target/classes/",
+                "src/test/resources/test-projects/target/test-classes/",
+                "example.TestSuiteExample",
+                true,
+                "test8"
+        );
+
+        // Assert test results
+        assertEquals(1, coveredTestResult.getRunningTests().size());
+        assertEquals(1, coveredTestResult.getPassingTests().size());
+        assertEquals(0, coveredTestResult.getFailingTests().size());
+        assertEquals(0, coveredTestResult.getIgnoredTests().size());
+
+        // Assert coverage of test class
+        CoverageDetailed covLine = (CoverageDetailed) coveredTestResult.getCoverageInformation();
+        System.out.println(covLine);
+        assertEquals(3, covLine.getDetailedCoverage().get("example/TestSuiteExample").getCov().get(2).intValue());
+    }
+
 }

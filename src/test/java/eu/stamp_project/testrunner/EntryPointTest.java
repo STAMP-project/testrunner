@@ -44,6 +44,7 @@ public class EntryPointTest extends AbstractTest {
         EntryPoint.verbose = true;
         EntryPoint.setMutationEngine(ConstantsHelper.MutationEngine.DESCARTES);
         EntryPoint.coverageDetail = ParserOptions.CoverageTransformerDetail.SUMMARIZED;
+        EntryPoint.coverTests = false;
     }
 
     @After
@@ -596,6 +597,53 @@ public class EntryPointTest extends AbstractTest {
         coverageDetailed = (CoverageDetailed) coveredTestResultPerTestMethod.getCoverageOf("test8");
         assertNotNull(coverageDetailed.getDetailedCoverage());
         assertEquals(5, coverageDetailed.getDetailedCoverage().size());
+    }
+
+    @Test
+    public void testRunCoveredTestResultPerTestMethodsDetailedCoverageCoverTests() throws Exception {
+        EntryPoint.coverageDetail = ParserOptions.CoverageTransformerDetail.DETAIL;
+        EntryPoint.coverTests = true;
+
+        /*
+            Test the runCoveredTestResultPerTestMethods() of EntryPoint.
+                It should return the CoveredTestResultPerTestMethod with the instruction coverage computed by Jacoco.
+         */
+        final String classpath = MAVEN_HOME + "org/jacoco/org.jacoco.core/0.7.9/org.jacoco.core-0.7.9.jar" + ConstantsHelper.PATH_SEPARATOR +
+                MAVEN_HOME + "org/ow2/asm/asm-debug-all/5.2/asm-debug-all-5.2.jar" + ConstantsHelper.PATH_SEPARATOR +
+                MAVEN_HOME + "commons-io/commons-io/2.5/commons-io-2.5.jar" + ConstantsHelper.PATH_SEPARATOR +
+                JUNIT_CP + ConstantsHelper.PATH_SEPARATOR + JUNIT5_CP;
+
+        final CoveredTestResultPerTestMethod coveredTestResultPerTestMethod = EntryPoint.runCoveredTestResultPerTestMethods(
+                classpath + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
+                TEST_PROJECT_CLASSES,
+                "example.TestSuiteExample",
+                new String[]{"test8"}
+//                new String[]{"test8", "test3"}
+        );
+
+        // Assert test results
+        assertEquals(1, coveredTestResultPerTestMethod.getRunningTests().size());
+        assertEquals(1, coveredTestResultPerTestMethod.getPassingTests().size());
+        assertEquals(0, coveredTestResultPerTestMethod.getFailingTests().size());
+        assertEquals(0, coveredTestResultPerTestMethod.getIgnoredTests().size());
+
+        // Assert detailed coverage
+        assertEquals(1, coveredTestResultPerTestMethod.getCoverageResultsMap().size());
+
+        /*
+        assertTrue(coveredTestResultPerTestMethod.getCoverageOf("test3") instanceof CoverageDetailed);
+        CoverageDetailed coverageDetailed = (CoverageDetailed) coveredTestResultPerTestMethod.getCoverageOf("test3");
+        assertNotNull(coverageDetailed.getDetailedCoverage());
+        assertEquals(16, coverageDetailed.getDetailedCoverage().size());
+         */
+
+        assertTrue(coveredTestResultPerTestMethod.getCoverageOf("test8") instanceof CoverageDetailed);
+        CoverageDetailed coverageDetailed = (CoverageDetailed) coveredTestResultPerTestMethod.getCoverageOf("test8");
+        assertNotNull(coverageDetailed.getDetailedCoverage());
+        assertEquals(16, coverageDetailed.getDetailedCoverage().size());
+        // This assertion fails because the coverage returns 0, when it should be 3
+        System.out.println(coverageDetailed.getDetailedCoverage());
+        assertEquals(3, coverageDetailed.getDetailedCoverage().get("example/TestSuiteExample").getCov().get(2).intValue());
     }
 
 }

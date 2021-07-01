@@ -131,7 +131,7 @@ public class EntryPoint {
     /**
      * Enable this boolean to keep the values after each run. The list of concerned
      * values are: JVMArgs, outPrintStream, errPrintStream, workingDirectory,
-     * timeoutInMs,
+     * timeoutInMs, coverTests
      */
     public static boolean persistence = true;
 
@@ -149,6 +149,11 @@ public class EntryPoint {
      */
     public static ParserOptions.CoverageTransformerDetail coverageDetail =
             ParserOptions.CoverageTransformerDetail.SUMMARIZED;
+
+    /**
+     * Allows to enable test class coverage computation.
+     */
+    public static boolean coverTests = false;
 
     // PIT OPTIONS
 
@@ -318,6 +323,7 @@ public class EntryPoint {
                         EntryPoint.coverageDetail == ParserOptions.CoverageTransformerDetail.SUMMARIZED ? "" :
                                 (ParserOptions.FLAG_coverage_detail + ConstantsHelper.WHITE_SPACE
                                         + EntryPoint.coverageDetail.name()),
+                        EntryPoint.coverTests ? ParserOptions.FLAG_cover_tests : "",
                 });
         return EntryPoint.runCoverage(javaCommand);
     }
@@ -406,6 +412,7 @@ public class EntryPoint {
                         EntryPoint.coverageDetail == ParserOptions.CoverageTransformerDetail.SUMMARIZED ? "" :
                                 (ParserOptions.FLAG_coverage_detail + ConstantsHelper.WHITE_SPACE
                                  + EntryPoint.coverageDetail.name()),
+                        EntryPoint.coverTests ? ParserOptions.FLAG_cover_tests : "",
                 });
         try {
             EntryPoint.runGivenCommandLine(javaCommand);
@@ -491,6 +498,7 @@ public class EntryPoint {
                         EntryPoint.coverageDetail == ParserOptions.CoverageTransformerDetail.SUMMARIZED ? "" :
                                 (ParserOptions.FLAG_coverage_detail + ConstantsHelper.WHITE_SPACE
                                         + EntryPoint.coverageDetail.name()),
+                        EntryPoint.coverTests ? ParserOptions.FLAG_cover_tests : "",
                 });
         try {
             EntryPoint.runGivenCommandLine(javaCommand);
@@ -637,6 +645,7 @@ public class EntryPoint {
         EntryPoint.outPrintStream = null;
         EntryPoint.errPrintStream = null;
         EntryPoint.blackList.clear();
+        EntryPoint.coverTests = false;
     }
 
     /*

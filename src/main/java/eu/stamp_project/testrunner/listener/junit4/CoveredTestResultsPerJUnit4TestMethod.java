@@ -122,7 +122,10 @@ public class CoveredTestResultsPerJUnit4TestMethod extends JUnit4TestResult impl
 		final CoverageBuilder coverageBuilder = new CoverageBuilder();
 		final Analyzer analyzer = new Analyzer(this.internalCoveredTestResult.getExecutionData(), coverageBuilder);
 		try {
-			analyzer.analyzeAll(new File(this.internalCoveredTestResult.getClassesDirectory()));
+			String[] paths = this.internalCoveredTestResult.getClassesDirectory().split(File.pathSeparator);
+			for (String path : paths) {
+				analyzer.analyzeAll(new File(path));
+			}
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

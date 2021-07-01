@@ -45,6 +45,9 @@ public class ParserOptions {
                 case FLAG_coverage_detail:
                     parserOptions.coverageTransformerDetail = CoverageTransformerDetail.valueOf(args[++i]);
                     break;
+                case FLAG_cover_tests:
+                    parserOptions.coverTests = true;
+                    break;
                 case " ":
                 case "":
                     break;
@@ -74,6 +77,9 @@ public class ParserOptions {
 
         usage.append(FLAG_coverage_detail).append(ConstantsHelper.WHITE_SPACE)
              .append(FLAG_HELP_coverage_detail).append(ConstantsHelper.LINE_SEPARATOR);
+
+        usage.append(FLAG_cover_tests).append(ConstantsHelper.WHITE_SPACE)
+                .append(FLAG_HELP_cover_tests).append(ConstantsHelper.LINE_SEPARATOR);
 
         System.out.println(usage.toString());
     }
@@ -136,6 +142,15 @@ public class ParserOptions {
                                                            " provided in the coverage information. Valid values:" +
                                                            "'SUMMARIZED' (default), 'DETAIL' or 'METHOD_DETAIL'.";
 
+    /**
+     * This value whether test classes are to be included in the coverage results
+     */
+    private boolean coverTests;
+
+    public static final String FLAG_cover_tests = "--cover-tests";
+
+    public static final String FLAG_HELP_cover_tests = "The usage of this flag results in test classes being included in the coverage results.";
+
 
     private ParserOptions() {
         this.pathToCompiledClassesOfTheProject = "";
@@ -143,6 +158,7 @@ public class ParserOptions {
         this.testMethodNamesToRun = new String[]{};
         this.blackList = new ArrayList<>();
         this.coverageTransformerDetail = CoverageTransformerDetail.SUMMARIZED;
+        this.coverTests = false;
     }
 
     public String getPathToCompiledClassesOfTheProject() {
@@ -174,4 +190,7 @@ public class ParserOptions {
 
     }
 
+    public boolean isCoverTests() {
+        return coverTests;
+    }
 }

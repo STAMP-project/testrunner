@@ -5,9 +5,6 @@ import eu.stamp_project.testrunner.listener.Coverage;
 import eu.stamp_project.testrunner.listener.CoverageTransformer;
 import eu.stamp_project.testrunner.listener.CoveredTestResult;
 import eu.stamp_project.testrunner.listener.TestResult;
-import eu.stamp_project.testrunner.listener.impl.CoverageCollectorDetailed;
-import eu.stamp_project.testrunner.listener.impl.CoverageCollectorMethodDetailed;
-import eu.stamp_project.testrunner.listener.impl.CoverageCollectorSummarization;
 import eu.stamp_project.testrunner.runner.Failure;
 import eu.stamp_project.testrunner.utils.ConstantsHelper;
 import org.apache.commons.io.FileUtils;
@@ -24,12 +21,9 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.ResourceBundle.clearCache;
 
@@ -58,28 +52,31 @@ public abstract class JacocoRunner {
         this(classesDirectory, testClassesDirectory, Collections.emptyList(), coverageTransformer);
     }
 
-    /**
-     * @param classesDirectory     the path to the directory that contains the .class file of sources
-     * @param testClassesDirectory the path to the directory that contains the .class file of test sources
-     * @param blackList            the names of the test methods to NOT be run.
-     */
+	/**
+	 * @param classesDirectory     the path to the directory that contains the .class file of sources
+	 * @param testClassesDirectory the path to the directory that contains the .class file of test sources
+	 * @param blackList            the names of the test methods to NOT be run.
+	 */
     public JacocoRunner(String classesDirectory, String testClassesDirectory, List<String> blackList, CoverageTransformer coverageTransformer) {
-        try {
-            this.instrumentedClassLoader = new MemoryClassLoader(
-                    new URL[]{
-                            new File(classesDirectory).toURI().toURL(),
-                            new File(testClassesDirectory).toURI().toURL()
-                    }
-            );
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        }
+    	URL[] dirs = Stream.concat(Arrays.stream(classesDirectory.split(File.pathSeparator)), Stream.of(testClassesDirectory))
+			    .map(x -> {
+				    try {
+					    return new File(x).toURI().toURL();
+				    } catch (MalformedURLException e) {
+					    throw new RuntimeException(e);
+				    }
+			    })
+			    .toArray(URL[]::new);
+        this.instrumentedClassLoader = new MemoryClassLoader(dirs);
         this.blackList = blackList;
         this.runtime = new LoggerRuntime();
         this.instrumenter = new Instrumenter(this.runtime);
         this.coverageTransformer = coverageTransformer;
         // instrument source code
-        instrumentAll(classesDirectory);
+	    String[] paths = classesDirectory.split(File.pathSeparator);
+	    for (String path : paths) {
+		    instrumentAll(path);
+	    }
     }
 
     
@@ -295,7 +292,7 @@ public abstract class JacocoRunner {
                 instrumentedClassLoader.addDefinition(fullQualifiedName,
                         instrumenter.instrument(instrumentedClassLoader.getResourceAsStream(fileName), fullQualifiedName));
             } catch (IOException e) {
-                throw new RuntimeException(fileName + "," + new File(fileName).getAbsolutePath() +
+                throw new RuntimeException(fileName + "," + next.getAbsolutePath() +
                         "," + fullQualifiedName, e);
             }
         }

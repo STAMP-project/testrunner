@@ -36,7 +36,7 @@ public class JUnit5JacocoRunner extends JacocoRunner {
     public static void main(String[] args) {
         final ParserOptions options = ParserOptions.parse(args);
         final String[] splittedArgs0 = options.getPathToCompiledClassesOfTheProject().split(ConstantsHelper.PATH_SEPARATOR);
-        final String classesDirectory = splittedArgs0[0];
+        final String classesDirectory = options.isCoverTests() ? options.getPathToCompiledClassesOfTheProject() : splittedArgs0[0];
         final String testClassesDirectory = splittedArgs0[1];
         final JacocoRunner jacocoRunner =
                 new JUnit5JacocoRunner(classesDirectory,
