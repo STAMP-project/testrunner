@@ -14,8 +14,6 @@ import org.jacoco.core.analysis.ICounter;
 import org.jacoco.core.data.ExecutionDataStore;
 import org.jacoco.core.data.SessionInfoStore;
 import org.jacoco.core.runtime.RuntimeData;
-import org.junit.platform.engine.support.descriptor.MethodSource;
-import org.junit.platform.launcher.TestIdentifier;
 import org.junit.runner.Description;
 
 import java.io.File;
@@ -24,9 +22,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -51,7 +46,7 @@ public class CoveredTestResultsPerJUnit4TestMethod extends JUnit4TestResult impl
 	 */
 	private Map<String, List<IClassCoverage>> coveragesPerMethodName;
 
-	public CoveredTestResultsPerJUnit4TestMethod(RuntimeData data, String classesDirectory, CoverageTransformer coverageTransformer) {
+	public CoveredTestResultsPerJUnit4TestMethod(RuntimeData data, List<String> classesDirectory, CoverageTransformer coverageTransformer) {
 		this.internalCoveredTestResult = new CoveredTestResultPerTestMethodImpl(data, classesDirectory, coverageTransformer);
 		this.coveragesPerMethodName = new HashMap<>();
 	}
@@ -79,8 +74,10 @@ public class CoveredTestResultsPerJUnit4TestMethod extends JUnit4TestResult impl
 		);
 
 		Coverage jUnit4Coverage =
-				internalCoveredTestResult.getCoverageTransformer().transformJacocoObject(this.internalCoveredTestResult.getExecutionData(),
-						this.internalCoveredTestResult.getClassesDirectory());
+				internalCoveredTestResult.getCoverageTransformer().transformJacocoObject(
+						this.internalCoveredTestResult.getExecutionData(),
+						this.internalCoveredTestResult.getClassesDirectory()
+				);
 		this.internalCoveredTestResult.getCoverageResultsMap().put(this.toString.apply(description), jUnit4Coverage);
 		if (isParametrized.test(description.getMethodName())) {
 			this.collectForParametrizedTest(this.toStringParametrized.apply(description));
@@ -118,7 +115,9 @@ public class CoveredTestResultsPerJUnit4TestMethod extends JUnit4TestResult impl
 		final CoverageBuilder coverageBuilder = new CoverageBuilder();
 		final Analyzer analyzer = new Analyzer(this.internalCoveredTestResult.getExecutionData(), coverageBuilder);
 		try {
-			analyzer.analyzeAll(new File(this.internalCoveredTestResult.getClassesDirectory()));
+			for (String directory : this.internalCoveredTestResult.getClassesDirectory()) {
+				analyzer.analyzeAll(new File(directory));
+			}
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

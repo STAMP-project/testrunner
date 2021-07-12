@@ -16,6 +16,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.ResourceBundle.clearCache;
 
@@ -36,18 +37,22 @@ public abstract class JacocoRunnerPerTestMethod extends JacocoRunner {
      * @param testMethodNames              the simple or fully qualified names of the test methods to execute
      * @return a {@link CoveragePerTestMethod} instance that contains the instruction coverage of the given tests.
      */
-    public CoveragePerTestMethod runCoveragePerTestMethod(String classesDirectory,
-                                                          String testClassesDirectory,
+    public CoveragePerTestMethod runCoveragePerTestMethod(List<String> classesDirectory,
+                                                          List<String> testClassesDirectory,
                                                           String[] testClassNames,
                                                           String[] testMethodNames) {
         final RuntimeData data = new RuntimeData();
         URLClassLoader classLoader;
-        try {
-            classLoader = new URLClassLoader(new URL[]
-                    {new File(testClassesDirectory).toURI().toURL()}, this.instrumentedClassLoader);
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        }
+        URL[] dirs = testClassesDirectory.stream()
+                .map(x -> {
+                    try {
+                        return new File(x).toURI().toURL();
+                    } catch (MalformedURLException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .toArray(URL[]::new);
+        classLoader = new URLClassLoader(dirs, this.instrumentedClassLoader);
         try {
             for (String fullyQualifiedClassName : testClassNames) {
                 String resource = ConstantsHelper.fullQualifiedNameToPath.apply(fullyQualifiedClassName) + ".class";
@@ -80,7 +85,7 @@ public abstract class JacocoRunnerPerTestMethod extends JacocoRunner {
     }
 
     protected abstract CoveragePerTestMethod executeTestPerTestMethod(RuntimeData data,
-                                                                      String classesDirectory,
+                                                                      List<String> classesDirectory,
                                                                       String[] testClassNames,
                                                                       String[] testMethodNames);
 
@@ -88,7 +93,7 @@ public abstract class JacocoRunnerPerTestMethod extends JacocoRunner {
      * @param classesDirectory     the path to the directory that contains the .class file of sources
      * @param testClassesDirectory the path to the directory that contains the .class file of test sources
      */
-    public JacocoRunnerPerTestMethod(String classesDirectory, String testClassesDirectory, CoverageTransformer coverageTransformer) {
+    public JacocoRunnerPerTestMethod(List<String> classesDirectory, List<String> testClassesDirectory, CoverageTransformer coverageTransformer) {
         super(classesDirectory, testClassesDirectory, coverageTransformer);
     }
 
@@ -97,7 +102,7 @@ public abstract class JacocoRunnerPerTestMethod extends JacocoRunner {
      * @param testClassesDirectory the path to the directory that contains the .class file of test sources
      * @param blackList            the names of the test methods to NOT be run.
      */
-    public JacocoRunnerPerTestMethod(String classesDirectory, String testClassesDirectory, List<String> blackList, CoverageTransformer coverageTransformer) {
+    public JacocoRunnerPerTestMethod(List<String> classesDirectory, List<String> testClassesDirectory, List<String> blackList, CoverageTransformer coverageTransformer) {
         super(classesDirectory, testClassesDirectory, blackList, coverageTransformer);
     }
 }

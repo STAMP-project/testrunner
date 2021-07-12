@@ -277,37 +277,56 @@ public class EntryPoint {
                 methodNames);
     }
 
-    /**
-     * Compute of the instruction coverage using <a
-     * href=http://www.eclemma.org/jacoco/>JaCoCo</a> for various test classes.
-     * <p>
-     * This method compute the instruction coverage, using <a
-     * href=http://www.eclemma.org/jacoco/>JaCoCo</a> obtained by executing the
-     * given test classes. This method require the path to the binaries, i.e.
-     * .class, of the source code on which the instruction must be computed. This
-     * method computes the "global" coverage, <i>i.e.</i> the coverage obtained if
-     * all the test are run. For a test method per test method result, see
-     * {@link EntryPoint#runCoveragePerTestMethods(String, String, String[], String[])}
-     * </p>
-     *
-     * @param classpath                      the classpath required to run the given tests classes.
-     * @param targetProjectClasses           path to the folder that contains binaries, i.e. .class, on which
-     *                                       Jacoco computes the coverage.
-     * @param fullQualifiedNameOfTestClasses test classes to be run.
-     * @param methodNames                    test methods to be run. Can be empty
-     * @return an instance of Coverage {@link Coverage} containing result of the
-     * execution of test classes.
-     * @throws TimeoutException when the execution takes longer than timeoutInMs
-     */
     public static Coverage runCoverage(String classpath, String targetProjectClasses,
                                        String[] fullQualifiedNameOfTestClasses, String[] methodNames) throws TimeoutException {
+        return EntryPoint.runCoverage(
+                classpath,
+                Collections.singletonList(targetProjectClasses.split(ConstantsHelper.PATH_SEPARATOR)[0]),
+                Collections.singletonList(targetProjectClasses.split(ConstantsHelper.PATH_SEPARATOR)[1]),
+                fullQualifiedNameOfTestClasses,
+                methodNames
+        );
+    }
+
+        /**
+		 * Compute of the instruction coverage using <a
+		 * href=http://www.eclemma.org/jacoco/>JaCoCo</a> for various test classes.
+		 * <p>
+		 * This method compute the instruction coverage, using <a
+		 * href=http://www.eclemma.org/jacoco/>JaCoCo</a> obtained by executing the
+		 * given test classes. This method require the path to the binaries, i.e.
+		 * .class, of the source code on which the instruction must be computed. This
+		 * method computes the "global" coverage, <i>i.e.</i> the coverage obtained if
+		 * all the test are run. For a test method per test method result, see
+		 * {@link EntryPoint#runCoveragePerTestMethods(String, String, String[], String[])}
+		 * </p>
+		 *
+		 * @param classpath                      the classpath required to run the given tests classes.
+		 * @param targetSourceClasses            path to the folders that contain source binaries, i.e. .class, on which
+		 *                                       Jacoco computes the coverage.
+         * @param targetTestClasses              path to the folders that contain test binaries, i.e. .class, on which
+         *                                       Jacoco computes the coverage.
+		 * @param fullQualifiedNameOfTestClasses test classes to be run.
+		 * @param methodNames                    test methods to be run. Can be empty
+		 * @return an instance of Coverage {@link Coverage} containing result of the
+		 * execution of test classes.
+		 * @throws TimeoutException when the execution takes longer than timeoutInMs
+		 */
+    public static Coverage runCoverage(String classpath,
+                                       List<String> targetSourceClasses,
+                                       List<String> targetTestClasses,
+                                       String[] fullQualifiedNameOfTestClasses,
+                                       String[] methodNames) throws TimeoutException {
         final String javaCommand = String.join(ConstantsHelper.WHITE_SPACE,
                 new String[]{getJavaCommand(),
                         (classpath + ConstantsHelper.PATH_SEPARATOR + ABSOLUTE_PATH_TO_RUNNER_CLASSES
                                 + ConstantsHelper.PATH_SEPARATOR + ABSOLUTE_PATH_TO_JACOCO_DEPENDENCIES).replaceAll(" ", "%20"),
                         EntryPoint.jUnit5Mode ? EntryPoint.JUNIT5_JACOCO_RUNNER_QUALIFIED_NAME : EntryPoint.JUNIT4_JACOCO_RUNNER_QUALIFIED_NAME,
                         ParserOptions.FLAG_pathToCompiledClassesOfTheProject,
-                        (targetProjectClasses).replaceAll(" ", "%20"), ParserOptions.FLAG_fullQualifiedNameOfTestClassToRun,
+                        targetSourceClasses.stream().reduce((x, y) -> x + ConstantsHelper.PATH_SEPARATOR + y).get().replaceAll(" ", "%20"),
+                        ParserOptions.FLAG_pathToCompiledTestClassesOfTheProject,
+                        targetTestClasses.stream().reduce((x, y) -> x + ConstantsHelper.PATH_SEPARATOR + y).get().replaceAll(" ", "%20"),
+                        ParserOptions.FLAG_fullQualifiedNameOfTestClassToRun,
                         String.join(ConstantsHelper.PATH_SEPARATOR, fullQualifiedNameOfTestClasses),
                         methodNames.length == 0 ? "" :
                                 (ParserOptions.FLAG_testMethodNamesToRun + ConstantsHelper.WHITE_SPACE +
@@ -362,33 +381,49 @@ public class EntryPoint {
         return load;
     }
 
-    /**
-     * Compute of the instruction coverage using <a
-     * href=http://www.eclemma.org/jacoco/>JaCoCo</a> for various test methods
-     * inside the given test class.
-     * <p>
-     * This method computes the instruction coverage, using <a
-     * href=http://www.eclemma.org/jacoco/>JaCoCo</a> obtained by executing the
-     * given test methods inside the given test classes. This method requires the
-     * path to the binaries, i.e. .class, of the source code on which the
-     * instruction must be computed. This method computes the per test method
-     * coverage, <i>i.e.</i> the coverage obtained by each test methods, separately.
-     * It does not run one by one test methods, but rather use a specific
-     * implementation of {@link org.junit.runner.notification.RunListener}.
-     * </p>
-     *
-     * @param classpath                      the classpath required to run the given tests classes.
-     * @param targetProjectClasses           path to the folder that contains binaries, i.e. .class, on which
-     *                                       Jacoco computes the coverage.
-     * @param fullQualifiedNameOfTestClasses test classes to be run.
-     * @param methodNames                    test methods to be run.
-     * @return a Map that associate each test method name to its instruction
-     * coverage, as an instance of JUnit4Coverage {@link JUnit4Coverage} of
-     * test classes.
-     * @throws TimeoutException when the execution takes longer than timeoutInMs
-     */
     public static CoveragePerTestMethod runCoveragePerTestMethods(String classpath, String targetProjectClasses,
                                                                   String[] fullQualifiedNameOfTestClasses, String[] methodNames) throws TimeoutException {
+        return EntryPoint.runCoveragePerTestMethods(
+                classpath,
+                Collections.singletonList(targetProjectClasses.split(ConstantsHelper.PATH_SEPARATOR)[0]),
+                Collections.singletonList(targetProjectClasses.split(ConstantsHelper.PATH_SEPARATOR)[1]),
+                fullQualifiedNameOfTestClasses,
+                methodNames
+        );
+    }
+
+        /**
+		 * Compute of the instruction coverage using <a
+		 * href=http://www.eclemma.org/jacoco/>JaCoCo</a> for various test methods
+		 * inside the given test class.
+		 * <p>
+		 * This method computes the instruction coverage, using <a
+		 * href=http://www.eclemma.org/jacoco/>JaCoCo</a> obtained by executing the
+		 * given test methods inside the given test classes. This method requires the
+		 * path to the binaries, i.e. .class, of the source code on which the
+		 * instruction must be computed. This method computes the per test method
+		 * coverage, <i>i.e.</i> the coverage obtained by each test methods, separately.
+		 * It does not run one by one test methods, but rather use a specific
+		 * implementation of {@link org.junit.runner.notification.RunListener}.
+		 * </p>
+		 *
+		 * @param classpath                      the classpath required to run the given tests classes.
+		 * @param targetSourceClasses           paths to the folders that contain source binaries, i.e. .class, on which
+		 *                                       Jacoco computes the coverage.
+         * @param targetTestClasses           paths to the folders that contain test binaries, i.e. .class, on which
+         *                                       Jacoco computes the coverage.
+		 * @param fullQualifiedNameOfTestClasses test classes to be run.
+		 * @param methodNames                    test methods to be run.
+		 * @return a Map that associate each test method name to its instruction
+		 * coverage, as an instance of JUnit4Coverage {@link JUnit4Coverage} of
+		 * test classes.
+		 * @throws TimeoutException when the execution takes longer than timeoutInMs
+		 */
+    public static CoveragePerTestMethod runCoveragePerTestMethods(String classpath,
+                                                                  List<String> targetSourceClasses,
+                                                                  List<String> targetTestClasses,
+                                                                  String[] fullQualifiedNameOfTestClasses,
+                                                                  String[] methodNames) throws TimeoutException {
         final String javaCommand = String.join(ConstantsHelper.WHITE_SPACE,
                 new String[]{
                         getJavaCommand(),
@@ -396,7 +431,10 @@ public class EntryPoint {
                                 + ConstantsHelper.PATH_SEPARATOR + ABSOLUTE_PATH_TO_JACOCO_DEPENDENCIES).replaceAll(" ", "%20"),
                         EntryPoint.jUnit5Mode ? EntryPoint.JUNIT5_JACOCO_RUNNER_PER_TEST_QUALIFIED_NAME : EntryPoint.JUNIT4_JACOCO_RUNNER_PER_TEST_QUALIFIED_NAME,
                         ParserOptions.FLAG_pathToCompiledClassesOfTheProject,
-                        (targetProjectClasses).replaceAll(" ", "%20"), ParserOptions.FLAG_fullQualifiedNameOfTestClassToRun,
+                        targetSourceClasses.stream().reduce((x, y) -> x + ConstantsHelper.PATH_SEPARATOR + y).get().replaceAll(" ", "%20"),
+                        ParserOptions.FLAG_pathToCompiledTestClassesOfTheProject,
+                        targetTestClasses.stream().reduce((x, y) -> x + ConstantsHelper.PATH_SEPARATOR + y).get().replaceAll(" ", "%20"),
+                        ParserOptions.FLAG_fullQualifiedNameOfTestClassToRun,
                         String.join(ConstantsHelper.PATH_SEPARATOR, fullQualifiedNameOfTestClasses),
                         methodNames.length == 0 ? "" : ParserOptions.FLAG_testMethodNamesToRun + ConstantsHelper.WHITE_SPACE +
                                 String.join(ConstantsHelper.PATH_SEPARATOR, methodNames),
@@ -447,6 +485,17 @@ public class EntryPoint {
                 new String[0]);
     }
 
+    public static CoveredTestResultPerTestMethod runCoveredTestResultPerTestMethods(String classpath, String targetProjectClasses,
+                                                                  String[] fullQualifiedNameOfTestClasses, String[] methodNames) throws TimeoutException {
+        return EntryPoint.runCoveredTestResultPerTestMethods(
+                classpath,
+                Collections.singletonList(targetProjectClasses.split(ConstantsHelper.PATH_SEPARATOR)[0]),
+                Collections.singletonList(targetProjectClasses.split(ConstantsHelper.PATH_SEPARATOR)[1]),
+                fullQualifiedNameOfTestClasses,
+                methodNames
+        );
+    }
+
     /**
      * Compute the test result and instruction coverage  using <a
      * href=http://www.eclemma.org/jacoco/>JaCoCo</a> for various test methods
@@ -463,7 +512,9 @@ public class EntryPoint {
      * </p>
      *
      * @param classpath                      the classpath required to run the given tests classes.
-     * @param targetProjectClasses           path to the folder that contains binaries, i.e. .class, on which
+     * @param targetSourceClasses            path to the folders that contain source binaries, i.e. .class, on which
+     *                                       Jacoco computes the coverage.
+     * @param targetTestClasses              path to the folders that contain test source binaries, i.e. .class, on which
      *                                       Jacoco computes the coverage.
      * @param fullQualifiedNameOfTestClasses test classes to be run.
      * @param methodNames                    test methods to be run.
@@ -472,8 +523,11 @@ public class EntryPoint {
      * test classes.
      * @throws TimeoutException when the execution takes longer than timeoutInMs
      */
-    public static CoveredTestResultPerTestMethod runCoveredTestResultPerTestMethods(String classpath, String targetProjectClasses,
-                                                                  String[] fullQualifiedNameOfTestClasses, String[] methodNames) throws TimeoutException {
+    public static CoveredTestResultPerTestMethod runCoveredTestResultPerTestMethods(String classpath,
+                                                                                    List<String> targetSourceClasses,
+                                                                                    List<String> targetTestClasses,
+                                                                                    String[] fullQualifiedNameOfTestClasses,
+                                                                                    String[] methodNames) throws TimeoutException {
         final String javaCommand = String.join(ConstantsHelper.WHITE_SPACE,
                 new String[]{
                         getJavaCommand(),
@@ -481,7 +535,10 @@ public class EntryPoint {
                                 + ConstantsHelper.PATH_SEPARATOR + ABSOLUTE_PATH_TO_JACOCO_DEPENDENCIES).replaceAll(" ", "%20"),
                         EntryPoint.jUnit5Mode ? EntryPoint.JUNIT5_JACOCO_RUNNER_COVERED_RESULT_PER_TEST_QUALIFIED_NAME : EntryPoint.JUNIT4_JACOCO_RUNNER_COVERED_RESULT_PER_TEST_QUALIFIED_NAME,
                         ParserOptions.FLAG_pathToCompiledClassesOfTheProject,
-                        (targetProjectClasses).replaceAll(" ", "%20"), ParserOptions.FLAG_fullQualifiedNameOfTestClassToRun,
+                        targetSourceClasses.stream().reduce((x, y) -> x + ConstantsHelper.PATH_SEPARATOR + y).get().replaceAll(" ", "%20"),
+                        ParserOptions.FLAG_pathToCompiledTestClassesOfTheProject,
+                        targetTestClasses.stream().reduce((x, y) -> x + ConstantsHelper.PATH_SEPARATOR + y).get().replaceAll(" ", "%20"),
+                        ParserOptions.FLAG_fullQualifiedNameOfTestClassToRun,
                         String.join(ConstantsHelper.PATH_SEPARATOR, fullQualifiedNameOfTestClasses),
                         methodNames.length == 0 ? "" : ParserOptions.FLAG_testMethodNamesToRun + ConstantsHelper.WHITE_SPACE +
                                 String.join(ConstantsHelper.PATH_SEPARATOR, methodNames),
@@ -506,7 +563,7 @@ public class EntryPoint {
         return load;
     }
 
-    /* COMPUTE MUTATION SCORE WITH PIT API */
+        /* COMPUTE MUTATION SCORE WITH PIT API */
 
     /**
      * @param classpath           the classpath of the project for which we need to compute the mutation score

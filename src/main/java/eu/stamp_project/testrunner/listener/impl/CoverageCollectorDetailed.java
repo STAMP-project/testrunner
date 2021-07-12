@@ -1,16 +1,17 @@
 package eu.stamp_project.testrunner.listener.impl;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import eu.stamp_project.testrunner.listener.CoverageTransformer;
 import org.jacoco.core.analysis.Analyzer;
 import org.jacoco.core.analysis.CoverageBuilder;
 import org.jacoco.core.analysis.IClassCoverage;
 import org.jacoco.core.analysis.IMethodCoverage;
 import org.jacoco.core.data.ExecutionDataStore;
-import eu.stamp_project.testrunner.listener.Coverage;
-import eu.stamp_project.testrunner.listener.CoverageTransformer;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * One implementation of {@link CoverageTransformer} that returns a {@link CoverageDetailed}.
@@ -20,17 +21,15 @@ public class CoverageCollectorDetailed implements CoverageTransformer {
 	private static final long serialVersionUID = 109548359596802378L;
 
 	@Override
-	public CoverageDetailed transformJacocoObject(ExecutionDataStore executionData, String classesDirectory) {
+	public CoverageDetailed transformJacocoObject(ExecutionDataStore executionData, List<String> classesDirectory) {
 
 	    CoverageInformation covered = new CoverageInformation();
 		
 		final CoverageBuilder coverageBuilder = new CoverageBuilder();
 		final Analyzer analyzer = new Analyzer(executionData, coverageBuilder);
 		try {
-			//TODO: change the interface to an array of URL
-			String[] paths = classesDirectory.split(File.pathSeparator);
-			for (String path : paths) {
-				analyzer.analyzeAll(new File(path));
+			for (String directory : classesDirectory) {
+				analyzer.analyzeAll(new File(directory));
 			}
 		} catch (IOException e) {
 			throw new RuntimeException(e);

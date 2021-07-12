@@ -3,10 +3,12 @@ package eu.stamp_project.testrunner.listener.junit4;
 import eu.stamp_project.testrunner.listener.Coverage;
 import eu.stamp_project.testrunner.listener.CoveragePerTestMethod;
 import eu.stamp_project.testrunner.listener.CoverageTransformer;
-import eu.stamp_project.testrunner.listener.impl.CoverageCollectorSummarization;
 import eu.stamp_project.testrunner.listener.impl.CoverageImpl;
 import eu.stamp_project.testrunner.listener.impl.CoveragePerTestMethodImpl;
-import org.jacoco.core.analysis.*;
+import org.jacoco.core.analysis.Analyzer;
+import org.jacoco.core.analysis.CoverageBuilder;
+import org.jacoco.core.analysis.IClassCoverage;
+import org.jacoco.core.analysis.ICounter;
 import org.jacoco.core.data.ExecutionDataStore;
 import org.jacoco.core.data.SessionInfoStore;
 import org.jacoco.core.runtime.RuntimeData;
@@ -14,10 +16,10 @@ import org.junit.runner.Description;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.regex.Pattern;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -44,7 +46,7 @@ public class CoveragePerJUnit4TestMethod extends JUnit4TestResult implements Cov
      */
     private Map<String, List<IClassCoverage>> coveragesPerMethodName;
 
-    public CoveragePerJUnit4TestMethod(RuntimeData data, String classesDirectory, CoverageTransformer coverageTransformer) {
+    public CoveragePerJUnit4TestMethod(RuntimeData data, List<String> classesDirectory, CoverageTransformer coverageTransformer) {
         this.internalCoverage = new CoveragePerTestMethodImpl(data, classesDirectory, coverageTransformer);
         this.coveragesPerMethodName = new HashMap<>();
     }
@@ -70,8 +72,10 @@ public class CoveragePerJUnit4TestMethod extends JUnit4TestResult implements Cov
         );
 
         Coverage jUnit4Coverage =
-                internalCoverage.getCoverageTransformer().transformJacocoObject(this.internalCoverage.getExecutionData(),
-                        this.internalCoverage.getClassesDirectory());
+                internalCoverage.getCoverageTransformer().transformJacocoObject(
+                        this.internalCoverage.getExecutionData(),
+                        this.internalCoverage.getClassesDirectory()
+                );
         this.internalCoverage.getCoverageResultsMap().put(this.toString.apply(description), jUnit4Coverage);
         if (isParametrized.test(description.getMethodName())) {
             this.collectForParametrizedTest(this.toStringParametrized.apply(description));
@@ -82,7 +86,9 @@ public class CoveragePerJUnit4TestMethod extends JUnit4TestResult implements Cov
         final CoverageBuilder coverageBuilder = new CoverageBuilder();
         final Analyzer analyzer = new Analyzer(this.internalCoverage.getExecutionData(), coverageBuilder);
         try {
-            analyzer.analyzeAll(new File(this.internalCoverage.getClassesDirectory()));
+            for (String directory : this.internalCoverage.getClassesDirectory()) {
+                analyzer.analyzeAll(new File(directory));
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

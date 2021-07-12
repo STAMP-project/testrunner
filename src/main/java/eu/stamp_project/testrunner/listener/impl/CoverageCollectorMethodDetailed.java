@@ -5,7 +5,8 @@ import eu.stamp_project.testrunner.listener.CoverageTransformer;
 import org.jacoco.core.analysis.*;
 import org.jacoco.core.data.ExecutionDataStore;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -13,11 +14,13 @@ import java.util.stream.IntStream;
 
 public class CoverageCollectorMethodDetailed implements CoverageTransformer {
     @Override
-    public Coverage transformJacocoObject(ExecutionDataStore executionData, String classesDirectory) {
+    public Coverage transformJacocoObject(ExecutionDataStore executionData, List<String> classesDirectory) {
         final CoverageBuilder coverageBuilder = new CoverageBuilder();
         final Analyzer analyzer = new Analyzer(executionData, coverageBuilder);
         try {
-            analyzer.analyzeAll(new File(classesDirectory));
+            for (String directory : classesDirectory) {
+                analyzer.analyzeAll(new File(directory));
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

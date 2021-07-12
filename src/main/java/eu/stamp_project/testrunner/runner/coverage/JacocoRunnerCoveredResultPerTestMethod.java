@@ -26,26 +26,30 @@ import static java.util.ResourceBundle.clearCache;
 public abstract class JacocoRunnerCoveredResultPerTestMethod extends JacocoRunnerPerTestMethod {
 
 
-	public JacocoRunnerCoveredResultPerTestMethod(String classesDirectory, String testClassesDirectory, CoverageTransformer coverageTransformer) {
+	public JacocoRunnerCoveredResultPerTestMethod(List<String> classesDirectory, List<String> testClassesDirectory, CoverageTransformer coverageTransformer) {
 		super(classesDirectory, testClassesDirectory, coverageTransformer);
 	}
 
-	public JacocoRunnerCoveredResultPerTestMethod(String classesDirectory, String testClassesDirectory, List<String> blackList, CoverageTransformer coverageTransformer) {
+	public JacocoRunnerCoveredResultPerTestMethod(List<String> classesDirectory, List<String> testClassesDirectory, List<String> blackList, CoverageTransformer coverageTransformer) {
 		super(classesDirectory, testClassesDirectory, blackList, coverageTransformer);
 	}
 
-	public CoveredTestResultPerTestMethod runCoveredTestResultPerTestMethod(String classesDirectory,
-	                                                                        String testClassesDirectory,
+	public CoveredTestResultPerTestMethod runCoveredTestResultPerTestMethod(List<String> classesDirectory,
+	                                                                        List<String> testClassesDirectory,
 	                                                                        String[] testClassNames,
 	                                                                        String[] testMethodNames) {
 		final RuntimeData data = new RuntimeData();
 		URLClassLoader classLoader;
-		try {
-			classLoader = new URLClassLoader(new URL[]
-					{new File(testClassesDirectory).toURI().toURL()}, this.instrumentedClassLoader);
-		} catch (MalformedURLException e) {
-			throw new RuntimeException(e);
-		}
+		URL[] dirs = testClassesDirectory.stream()
+				.map(x -> {
+					try {
+						return new File(x).toURI().toURL();
+					} catch (MalformedURLException e) {
+						throw new RuntimeException(e);
+					}
+				})
+				.toArray(URL[]::new);
+		classLoader = new URLClassLoader(dirs, this.instrumentedClassLoader);
 
 		try {
 			// TODO: I'm not sure this for loop is doing anything
@@ -75,12 +79,12 @@ public abstract class JacocoRunnerCoveredResultPerTestMethod extends JacocoRunne
 	}
 
 	@Override
-	protected CoveragePerTestMethod executeTestPerTestMethod(RuntimeData data, String classesDirectory, String[] testClassNames, String[] testMethodNames) {
+	protected CoveragePerTestMethod executeTestPerTestMethod(RuntimeData data, List<String> classesDirectory, String[] testClassNames, String[] testMethodNames) {
 		throw new UnsupportedOperationException();
 	}
 
 	protected abstract CoveredTestResultPerTestMethod executeCoveredTestPerTestMethod(RuntimeData data,
-	                                                                                  String classesDirectory,
+	                                                                                  List<String> classesDirectory,
 	                                                                                  String[] testClassNames,
 	                                                                                  String[] testMethodNames);
 
