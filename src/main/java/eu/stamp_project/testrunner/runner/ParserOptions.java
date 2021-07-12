@@ -1,6 +1,5 @@
 package eu.stamp_project.testrunner.runner;
 
-import eu.stamp_project.testrunner.listener.Coverage;
 import eu.stamp_project.testrunner.listener.CoverageTransformer;
 import eu.stamp_project.testrunner.listener.impl.CoverageCollectorDetailed;
 import eu.stamp_project.testrunner.listener.impl.CoverageCollectorMethodDetailed;
@@ -9,8 +8,10 @@ import eu.stamp_project.testrunner.utils.ConstantsHelper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * created by Benjamin DANGLOT
@@ -31,7 +32,10 @@ public class ParserOptions {
         for (int i = 0; i < args.length; i++) {
             switch (args[i]) {
                 case FLAG_pathToCompiledClassesOfTheProject:
-                    parserOptions.pathToCompiledClassesOfTheProject = args[++i];
+                    parserOptions.pathToCompiledClassesOfTheProject = Arrays.stream(args[++i].split(ConstantsHelper.PATH_SEPARATOR)).collect(Collectors.toList());
+                    break;
+                case FLAG_pathToCompiledTestClassesOfTheProject:
+                    parserOptions.pathToCompiledTestClassesOfTheProject = Arrays.stream(args[++i].split(ConstantsHelper.PATH_SEPARATOR)).collect(Collectors.toList());
                     break;
                 case FLAG_fullQualifiedNameOfTestClassToRun:
                     parserOptions.fullQualifiedNameOfTestClassesToRun = args[++i].split(ConstantsHelper.PATH_SEPARATOR);
@@ -63,6 +67,9 @@ public class ParserOptions {
         usage.append(FLAG_pathToCompiledClassesOfTheProject).append(ConstantsHelper.WHITE_SPACE)
                 .append(FLAG_HELP_pathToCompiledClassesOfTheProject).append(ConstantsHelper.LINE_SEPARATOR);
 
+        usage.append(FLAG_pathToCompiledTestClassesOfTheProject).append(ConstantsHelper.WHITE_SPACE)
+                .append(FLAG_HELP_pathToCompiledTestClassesOfTheProject).append(ConstantsHelper.LINE_SEPARATOR);
+
         usage.append(FLAG_fullQualifiedNameOfTestClassToRun).append(ConstantsHelper.WHITE_SPACE)
                 .append(FLAG_HELP_fullQualifiedNameOfTestClassToRun).append(ConstantsHelper.LINE_SEPARATOR);
 
@@ -79,14 +86,19 @@ public class ParserOptions {
     }
 
     /**
-     * This string represents the path to the compiles classes, sources and tests, of the project.
-     * These two paths should be separated by the system path separator, e.g. ':' on Linux.
+     * Options for the locations of source and test binaries
      */
-    private String pathToCompiledClassesOfTheProject;
+    private List<String> pathToCompiledClassesOfTheProject;
 
-    public static final String FLAG_pathToCompiledClassesOfTheProject = "--binaries";
+    public static final String FLAG_pathToCompiledClassesOfTheProject = "--sourceBinaries";
 
-    private static final String FLAG_HELP_pathToCompiledClassesOfTheProject = "This flag must be followed by the path of both directories of sources and test binaries. Both paths must be separated by the system path separator, e.g. ':' on Linux";
+    private static final String FLAG_HELP_pathToCompiledClassesOfTheProject = "This flag must be followed by the paths of source binaries. Paths must be separated by the system path separator, e.g. ':' on Linux";
+
+    private List<String> pathToCompiledTestClassesOfTheProject;
+
+    public static final String FLAG_pathToCompiledTestClassesOfTheProject = "--testBinaries";
+
+    private static final String FLAG_HELP_pathToCompiledTestClassesOfTheProject = "This flag must be followed by the paths of test binaries. Paths must be separated by the system path separator, e.g. ':' on Linux";
 
     /**
      * This list the full qualified names of the test classes to run.
@@ -138,15 +150,20 @@ public class ParserOptions {
 
 
     private ParserOptions() {
-        this.pathToCompiledClassesOfTheProject = "";
+        this.pathToCompiledClassesOfTheProject = Collections.singletonList("");
+        this.pathToCompiledTestClassesOfTheProject = Collections.singletonList("");
         this.fullQualifiedNameOfTestClassesToRun = new String[]{};
         this.testMethodNamesToRun = new String[]{};
         this.blackList = new ArrayList<>();
         this.coverageTransformerDetail = CoverageTransformerDetail.SUMMARIZED;
     }
 
-    public String getPathToCompiledClassesOfTheProject() {
+    public List<String> getPathToCompiledClassesOfTheProject() {
         return pathToCompiledClassesOfTheProject;
+    }
+
+    public List<String> getPathToCompiledTestClassesOfTheProject() {
+        return pathToCompiledTestClassesOfTheProject;
     }
 
     public String[] getFullQualifiedNameOfTestClassesToRun() {

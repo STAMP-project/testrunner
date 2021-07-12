@@ -31,7 +31,7 @@ public class CoveredTestResultPerTestMethodImpl implements CoveredTestResultPerT
 
 	protected final Map<String, Coverage> coverageResultsMap;
 
-	protected final String classesDirectory;
+	protected final List<String> classesDirectory;
 
 	protected transient RuntimeData data;
 
@@ -46,7 +46,7 @@ public class CoveredTestResultPerTestMethodImpl implements CoveredTestResultPerT
 	private List<Failure> assumptionFailingTests;
 	private List<String> ignoredTests;
 
-	public CoveredTestResultPerTestMethodImpl(RuntimeData data, String classesDirectory, CoverageTransformer coverageTransformer) {
+	public CoveredTestResultPerTestMethodImpl(RuntimeData data, List<String> classesDirectory, CoverageTransformer coverageTransformer) {
 		this.data = data;
 		this.classesDirectory = classesDirectory;
 		this.coverageResultsMap = new HashMap<>();
@@ -58,7 +58,7 @@ public class CoveredTestResultPerTestMethodImpl implements CoveredTestResultPerT
 
 	}
 
-	public String getClassesDirectory() {
+	public List<String> getClassesDirectory() {
 		return classesDirectory;
 	}
 

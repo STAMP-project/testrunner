@@ -67,7 +67,8 @@ public class EntryPointTest extends AbstractTest {
          */
 
         final List<? extends AbstractPitResult> pitResults = EntryPoint.runPit(
-                JUNIT_CP + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
+                JUNIT_CP + ConstantsHelper.PATH_SEPARATOR +
+                        SOURCE_PROJECT_CLASSES + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
                 "src/test/resources/test-projects/",
                 "example.*",
                 "example.TestSuiteExample"
@@ -88,7 +89,8 @@ public class EntryPointTest extends AbstractTest {
         EntryPoint.setMutationEngine(ConstantsHelper.MutationEngine.GREGOR);
 
         final List<? extends AbstractPitResult> pitResults = EntryPoint.runPit(
-                JUNIT_CP + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
+                JUNIT_CP + ConstantsHelper.PATH_SEPARATOR +
+                        SOURCE_PROJECT_CLASSES + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
                 "src/test/resources/test-projects/",
                 "example.*",
                 "example.TestSuiteExample(.)*"
@@ -106,7 +108,8 @@ public class EntryPointTest extends AbstractTest {
         EntryPoint.blackList.add("testFailing");
 
         final TestResult testResult = EntryPoint.runTests(
-                JUNIT_CP + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
+                JUNIT_CP + ConstantsHelper.PATH_SEPARATOR +
+                        SOURCE_PROJECT_CLASSES + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
                 "failing.FailingTestClass"
         );
 
@@ -144,7 +147,8 @@ public class EntryPointTest extends AbstractTest {
         assertNotNull(EntryPoint.JVMArgs);
 
         final TestResult testResult = EntryPoint.runTests(
-                JUNIT_CP + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
+                JUNIT_CP + ConstantsHelper.PATH_SEPARATOR +
+                        SOURCE_PROJECT_CLASSES + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
                 "example.TestSuiteExample"
         );
 
@@ -169,7 +173,8 @@ public class EntryPointTest extends AbstractTest {
         assertNotNull(EntryPoint.JVMArgs);
 
         TestResult testResult = EntryPoint.runTests(
-                JUNIT_CP + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
+                JUNIT_CP + ConstantsHelper.PATH_SEPARATOR +
+                        SOURCE_PROJECT_CLASSES + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
                 "example.TestSuiteExample"
         );
 
@@ -182,7 +187,8 @@ public class EntryPointTest extends AbstractTest {
         assertNotNull(EntryPoint.JVMArgs);
 
         testResult = EntryPoint.runTests(
-                JUNIT_CP + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
+                JUNIT_CP + ConstantsHelper.PATH_SEPARATOR +
+                        SOURCE_PROJECT_CLASSES + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
                 "example.TestSuiteExample"
         );
 
@@ -200,7 +206,8 @@ public class EntryPointTest extends AbstractTest {
 
         final TestResult testResult = EntryPoint.runTests(
                 JUNIT_CP + ConstantsHelper.PATH_SEPARATOR + EASYMOCK_CP +
-                        ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
+                        ConstantsHelper.PATH_SEPARATOR +
+                        SOURCE_PROJECT_CLASSES + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
                 "easymock.LoginControllerIntegrationTest"
         );
         assertEquals(7, testResult.getRunningTests().size());
@@ -221,7 +228,8 @@ public class EntryPointTest extends AbstractTest {
          */
 
         final TestResult testResult = EntryPoint.runTests(
-                JUNIT_CP + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
+                JUNIT_CP + ConstantsHelper.PATH_SEPARATOR +
+                        SOURCE_PROJECT_CLASSES + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
                 "failing.FailingTestClass"
         );
 
@@ -247,7 +255,8 @@ public class EntryPointTest extends AbstractTest {
         EntryPoint.timeoutInMs = 1;
         try {
             EntryPoint.runTests(
-                    JUNIT_CP + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
+                    JUNIT_CP + ConstantsHelper.PATH_SEPARATOR +
+                            SOURCE_PROJECT_CLASSES + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
                     new String[]{"example.TestSuiteExample", "example.TestSuiteExample2"}
             );
             fail("Should have thrown a Time out Exception");
@@ -266,7 +275,8 @@ public class EntryPointTest extends AbstractTest {
          */
 
         final TestResult testResult = EntryPoint.runTests(
-                JUNIT_CP + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
+                JUNIT_CP + ConstantsHelper.PATH_SEPARATOR +
+                        SOURCE_PROJECT_CLASSES + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
                 new String[]{"example.TestSuiteExample", "example.TestSuiteExample2"}
         );
         assertEquals(13, testResult.getPassingTests().size());
@@ -282,7 +292,8 @@ public class EntryPointTest extends AbstractTest {
          */
 
         final TestResult testResult = EntryPoint.runTests(
-                JUNIT_CP + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
+                JUNIT_CP + ConstantsHelper.PATH_SEPARATOR +
+                        SOURCE_PROJECT_CLASSES + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
                 "example.TestSuiteExample"
         );
         assertEquals(7, testResult.getPassingTests().size());
@@ -298,7 +309,8 @@ public class EntryPointTest extends AbstractTest {
          */
 
         final TestResult testResult = EntryPoint.runTests(
-                JUNIT_CP + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
+                JUNIT_CP + ConstantsHelper.PATH_SEPARATOR +
+                        SOURCE_PROJECT_CLASSES + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
                 new String[]{"example.TestSuiteExample", "example.TestSuiteExample2"},
                 new String[]{"example.TestSuiteExample#test3", "example.TestSuiteExample2#test3"}
         );
@@ -318,7 +330,8 @@ public class EntryPointTest extends AbstractTest {
         EntryPoint.verbose = true;
 
         final TestResult testResult = EntryPoint.runTests(
-                JUNIT_CP + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
+                JUNIT_CP + ConstantsHelper.PATH_SEPARATOR +
+                        SOURCE_PROJECT_CLASSES + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
                 "example.TestSuiteExample",
                 new String[]{"test4", "test9"}
         );
@@ -342,8 +355,9 @@ public class EntryPointTest extends AbstractTest {
         ;
 
         final Coverage coverage = EntryPoint.runCoverage(
-                classpath + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
-                TEST_PROJECT_CLASSES,
+                classpath + ConstantsHelper.PATH_SEPARATOR +
+                        SOURCE_PROJECT_CLASSES + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
+                SOURCE_PROJECT_CLASSES + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
                 "example.TestSuiteExample",
                 new String[]{"test8", "test3"}
         );
@@ -365,8 +379,9 @@ public class EntryPointTest extends AbstractTest {
         ;
 
         final Coverage coverage = EntryPoint.runCoverage(
-                classpath + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
-                TEST_PROJECT_CLASSES,
+                classpath + ConstantsHelper.PATH_SEPARATOR +
+                        SOURCE_PROJECT_CLASSES + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
+                SOURCE_PROJECT_CLASSES + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
                 new String[]{"example.TestSuiteExample", "example.TestSuiteExample2"},
                 new String[]{"example.TestSuiteExample#test3", "example.TestSuiteExample2#test3"}
         );
@@ -387,8 +402,9 @@ public class EntryPointTest extends AbstractTest {
                 JUNIT_CP + ConstantsHelper.PATH_SEPARATOR + JUNIT5_CP;
 
         final Coverage coverage = EntryPoint.runCoverage(
-                classpath + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
-                TEST_PROJECT_CLASSES,
+                classpath + ConstantsHelper.PATH_SEPARATOR +
+                        SOURCE_PROJECT_CLASSES + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
+                SOURCE_PROJECT_CLASSES + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
                 "example.TestSuiteExample"
         );
 
@@ -416,8 +432,9 @@ public class EntryPointTest extends AbstractTest {
         EntryPoint.blackList.add("test9");
 
         final Coverage coverage = EntryPoint.runCoverage(
-                classpath + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
-                TEST_PROJECT_CLASSES,
+                classpath + ConstantsHelper.PATH_SEPARATOR +
+                        SOURCE_PROJECT_CLASSES + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
+                SOURCE_PROJECT_CLASSES + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
                 "example.TestSuiteExample"
         );
 
@@ -438,8 +455,9 @@ public class EntryPointTest extends AbstractTest {
                 JUNIT_CP + ConstantsHelper.PATH_SEPARATOR + JUNIT5_CP;
 
         final CoveragePerTestMethod coveragePerTestMethod = EntryPoint.runCoveragePerTestMethods(
-                classpath + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
-                TEST_PROJECT_CLASSES,
+                classpath + ConstantsHelper.PATH_SEPARATOR +
+                        SOURCE_PROJECT_CLASSES + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
+                SOURCE_PROJECT_CLASSES + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
                 "example.TestSuiteExample",
                 new String[]{"test8", "test3"}
         );
@@ -463,8 +481,9 @@ public class EntryPointTest extends AbstractTest {
                 JUNIT_CP + ConstantsHelper.PATH_SEPARATOR + JUNIT5_CP;
 
         final CoveragePerTestMethod coveragePerTestMethod = EntryPoint.runCoveragePerTestMethods(
-                classpath + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
-                TEST_PROJECT_CLASSES,
+                classpath + ConstantsHelper.PATH_SEPARATOR +
+                        SOURCE_PROJECT_CLASSES + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
+                SOURCE_PROJECT_CLASSES + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
                 new String[]{"example.TestSuiteExample", "example.TestSuiteExample2"},
                 new String[]{"example.TestSuiteExample#test3", "example.TestSuiteExample2#test3"}
         );
@@ -483,7 +502,8 @@ public class EntryPointTest extends AbstractTest {
          */
 
         final TestResult testResult = EntryPoint.runTests(
-                JUNIT_CP + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
+                JUNIT_CP + ConstantsHelper.PATH_SEPARATOR +
+                        SOURCE_PROJECT_CLASSES + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
                 "example.ParametrizedTestSuiteExample"
         );
         System.out.println(testResult);
@@ -499,7 +519,8 @@ public class EntryPointTest extends AbstractTest {
          */
 
         final TestResult testResult = EntryPoint.runTests(
-                JUNIT_CP + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
+                JUNIT_CP + ConstantsHelper.PATH_SEPARATOR +
+                        SOURCE_PROJECT_CLASSES + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
                 "example.ParametrizedTestSuiteExample",
                 "test3"
         );
@@ -515,9 +536,10 @@ public class EntryPointTest extends AbstractTest {
          */
 
         EntryPoint.runCoveragePerTestMethods(
-                JUNIT_CP + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES
+                JUNIT_CP + ConstantsHelper.PATH_SEPARATOR +
+                        SOURCE_PROJECT_CLASSES + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES
                         + ConstantsHelper.PATH_SEPARATOR + JUNIT5_CP,
-                TEST_PROJECT_CLASSES,
+                SOURCE_PROJECT_CLASSES + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
                 "example.ParametrizedTestSuiteExample",
                 "test3:test4:test7"
         );
@@ -536,8 +558,8 @@ public class EntryPointTest extends AbstractTest {
                 JUNIT_CP + ConstantsHelper.PATH_SEPARATOR + JUNIT5_CP;
 
         final CoveredTestResultPerTestMethod coveredTestResultPerTestMethod = EntryPoint.runCoveredTestResultPerTestMethods(
-                classpath + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
-                TEST_PROJECT_CLASSES,
+                classpath + ConstantsHelper.PATH_SEPARATOR + SOURCE_PROJECT_CLASSES,
+                SOURCE_PROJECT_CLASSES + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
                 "example.TestSuiteExample",
                 new String[]{"test8", "test3"}
         );
@@ -565,9 +587,9 @@ public class EntryPointTest extends AbstractTest {
          */
 
         final CoveredTestResultPerTestMethod coveredTestResultPerTestMethod = EntryPoint.runCoveredTestResultPerTestMethods(
-                JUNIT_CP + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES
+                JUNIT_CP + ConstantsHelper.PATH_SEPARATOR + SOURCE_PROJECT_CLASSES
                         + ConstantsHelper.PATH_SEPARATOR + JUNIT5_CP,
-                TEST_PROJECT_CLASSES,
+                SOURCE_PROJECT_CLASSES + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
                 "example.ParametrizedTestSuiteExample",
                 "test3:test4:test7"
         );
@@ -613,8 +635,8 @@ public class EntryPointTest extends AbstractTest {
                 JUNIT_CP + ConstantsHelper.PATH_SEPARATOR + JUNIT5_CP;
 
         final CoveredTestResultPerTestMethod coveredTestResultPerTestMethod = EntryPoint.runCoveredTestResultPerTestMethods(
-                classpath + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
-                TEST_PROJECT_CLASSES,
+                classpath + ConstantsHelper.PATH_SEPARATOR + SOURCE_PROJECT_CLASSES,
+                SOURCE_PROJECT_CLASSES + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
                 new String[]{"example.TestSuiteExample", "example.TestSuiteExample2"},
                 new String[]{"example.TestSuiteExample#test3", "example.TestSuiteExample2#test3"}
         );
@@ -653,8 +675,8 @@ public class EntryPointTest extends AbstractTest {
                 JUNIT_CP + ConstantsHelper.PATH_SEPARATOR + JUNIT5_CP;
 
         final CoveredTestResultPerTestMethod coveredTestResultPerTestMethod = EntryPoint.runCoveredTestResultPerTestMethods(
-                classpath + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
-                TEST_PROJECT_CLASSES,
+                classpath + ConstantsHelper.PATH_SEPARATOR + SOURCE_PROJECT_CLASSES,
+                SOURCE_PROJECT_CLASSES + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
                 "example.TestSuiteExample",
                 new String[]{"test8", "test3"}
         );

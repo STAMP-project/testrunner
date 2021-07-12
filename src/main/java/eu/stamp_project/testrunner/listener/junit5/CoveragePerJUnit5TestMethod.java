@@ -3,7 +3,6 @@ package eu.stamp_project.testrunner.listener.junit5;
 import eu.stamp_project.testrunner.listener.Coverage;
 import eu.stamp_project.testrunner.listener.CoveragePerTestMethod;
 import eu.stamp_project.testrunner.listener.CoverageTransformer;
-import eu.stamp_project.testrunner.listener.impl.CoverageCollectorSummarization;
 import eu.stamp_project.testrunner.listener.impl.CoveragePerTestMethodImpl;
 import eu.stamp_project.testrunner.runner.Failure;
 import org.jacoco.core.data.ExecutionDataStore;
@@ -12,6 +11,7 @@ import org.jacoco.core.runtime.RuntimeData;
 import org.junit.platform.engine.TestExecutionResult;
 import org.junit.platform.launcher.TestIdentifier;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,7 +28,7 @@ public class CoveragePerJUnit5TestMethod extends JUnit5TestResult implements Cov
     private CoveragePerTestMethodImpl internalCoverage;
 
 
-    public CoveragePerJUnit5TestMethod(RuntimeData data, String classesDirectory, CoverageTransformer coverageTransformer) {
+    public CoveragePerJUnit5TestMethod(RuntimeData data, List<String> classesDirectory, CoverageTransformer coverageTransformer) {
         this.internalCoverage = new CoveragePerTestMethodImpl(data, classesDirectory, coverageTransformer);
     }
 
@@ -57,8 +57,10 @@ public class CoveragePerJUnit5TestMethod extends JUnit5TestResult implements Cov
             );
 
             Coverage jUnit5Coverage =
-                    internalCoverage.getCoverageTransformer().transformJacocoObject(this.internalCoverage.getExecutionData(),
-                            this.internalCoverage.getClassesDirectory());
+                    internalCoverage.getCoverageTransformer().transformJacocoObject(
+                            this.internalCoverage.getExecutionData(),
+                            this.internalCoverage.getClassesDirectory()
+                    );
             this.internalCoverage.getCoverageResultsMap().put(this.toString.apply(testIdentifier), jUnit5Coverage);
             switch (testExecutionResult.getStatus()) {
                 case FAILED:

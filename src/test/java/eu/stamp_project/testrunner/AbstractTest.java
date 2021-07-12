@@ -25,6 +25,8 @@ import static org.junit.Assert.assertEquals;
 public class AbstractTest {
     public static String MAVEN_HOME;
 
+    public static String SOURCE_PROJECT_CLASSES;
+
     public static String TEST_PROJECT_CLASSES;
 
     public static String JUNIT_CP;
@@ -51,8 +53,8 @@ public class AbstractTest {
                     .get();
         }
 
-        TEST_PROJECT_CLASSES = "src/test/resources/test-projects/target/classes/" + ConstantsHelper.PATH_SEPARATOR +
-                "src/test/resources/test-projects/target/test-classes/";
+        SOURCE_PROJECT_CLASSES = "src/test/resources/test-projects/target/classes/";
+        TEST_PROJECT_CLASSES = "src/test/resources/test-projects/target/test-classes/";
         JUNIT_CP = MAVEN_HOME + "junit/junit/4.12/junit-4.12.jar" + ConstantsHelper.PATH_SEPARATOR
                 + MAVEN_HOME + "org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar";
         EASYMOCK_CP = MAVEN_HOME + "org/easymock/easymock/3.4/easymock-3.4.jar" + ConstantsHelper.PATH_SEPARATOR

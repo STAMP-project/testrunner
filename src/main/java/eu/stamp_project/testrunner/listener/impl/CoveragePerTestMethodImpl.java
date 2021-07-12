@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -28,7 +29,7 @@ public class CoveragePerTestMethodImpl implements CoveragePerTestMethod {
 
     protected final Map<String, Coverage> coverageResultsMap;
 
-    protected final String classesDirectory;
+    protected final List<String> classesDirectory;
 
     protected transient RuntimeData data;
 
@@ -44,14 +45,14 @@ public class CoveragePerTestMethodImpl implements CoveragePerTestMethod {
         this.coverageTransformer = new CoverageCollectorSummarization();
     }
 
-    public CoveragePerTestMethodImpl(RuntimeData data, String classesDirectory, CoverageTransformer coverageTransformer) {
+    public CoveragePerTestMethodImpl(RuntimeData data, List<String> classesDirectory, CoverageTransformer coverageTransformer) {
         this.data = data;
         this.classesDirectory = classesDirectory;
         this.coverageResultsMap = new HashMap<>();
         this.coverageTransformer = coverageTransformer;
     }
 
-    public String getClassesDirectory() {
+    public List<String> getClassesDirectory() {
         return classesDirectory;
     }
 

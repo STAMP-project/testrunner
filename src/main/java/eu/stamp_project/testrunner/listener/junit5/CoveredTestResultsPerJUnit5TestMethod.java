@@ -12,6 +12,7 @@ import org.junit.platform.engine.TestExecutionResult;
 import org.junit.platform.engine.support.descriptor.MethodSource;
 import org.junit.platform.launcher.TestIdentifier;
 
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -26,7 +27,7 @@ public class CoveredTestResultsPerJUnit5TestMethod extends JUnit5TestResult impl
 
 	private CoveredTestResultPerTestMethodImpl internalCoveredTestResult;
 
-	public CoveredTestResultsPerJUnit5TestMethod(RuntimeData data, String classesDirectory, CoverageTransformer coverageTransformer) {
+	public CoveredTestResultsPerJUnit5TestMethod(RuntimeData data, List<String> classesDirectory, CoverageTransformer coverageTransformer) {
 		this.internalCoveredTestResult = new CoveredTestResultPerTestMethodImpl(data, classesDirectory, coverageTransformer);
 	}
 
@@ -62,8 +63,10 @@ public class CoveredTestResultsPerJUnit5TestMethod extends JUnit5TestResult impl
 			);
 
 			Coverage jUnit5Coverage =
-					internalCoveredTestResult.getCoverageTransformer().transformJacocoObject(this.internalCoveredTestResult.getExecutionData(),
-							this.internalCoveredTestResult.getClassesDirectory());
+					internalCoveredTestResult.getCoverageTransformer().transformJacocoObject(
+							this.internalCoveredTestResult.getExecutionData(),
+							this.internalCoveredTestResult.getClassesDirectory()
+					);
 			this.internalCoveredTestResult.getCoverageResultsMap().put(this.toString.apply(testIdentifier), jUnit5Coverage);
 			switch (testExecutionResult.getStatus()) {
 				case FAILED:

@@ -28,7 +28,8 @@ public class JUnit5JacocoRunnerTest extends AbstractTest {
          */
 
         JUnit5JacocoRunner.main(new String[]{
-                        ParserOptions.FLAG_pathToCompiledClassesOfTheProject, TEST_PROJECT_CLASSES,
+                        ParserOptions.FLAG_pathToCompiledClassesOfTheProject, SOURCE_PROJECT_CLASSES,
+                        ParserOptions.FLAG_pathToCompiledTestClassesOfTheProject, TEST_PROJECT_CLASSES,
                         ParserOptions.FLAG_fullQualifiedNameOfTestClassToRun, "junit5.TestSuiteExample",
                 }
         );
@@ -56,7 +57,8 @@ public class JUnit5JacocoRunnerTest extends AbstractTest {
          */
 
         JUnit5JacocoRunner.main(new String[]{
-                        ParserOptions.FLAG_pathToCompiledClassesOfTheProject, TEST_PROJECT_CLASSES,
+                        ParserOptions.FLAG_pathToCompiledClassesOfTheProject, SOURCE_PROJECT_CLASSES,
+                        ParserOptions.FLAG_pathToCompiledTestClassesOfTheProject, TEST_PROJECT_CLASSES,
                         ParserOptions.FLAG_fullQualifiedNameOfTestClassToRun, "junit5.TestSuiteExample",
                         ParserOptions.FLAG_testMethodNamesToRun, "test8:test2"
                 }
@@ -75,7 +77,8 @@ public class JUnit5JacocoRunnerTest extends AbstractTest {
          */
 
         JUnit5JacocoRunner.main(new String[]{
-                        ParserOptions.FLAG_pathToCompiledClassesOfTheProject, TEST_PROJECT_CLASSES,
+                        ParserOptions.FLAG_pathToCompiledClassesOfTheProject, SOURCE_PROJECT_CLASSES,
+                        ParserOptions.FLAG_pathToCompiledTestClassesOfTheProject, TEST_PROJECT_CLASSES,
                         ParserOptions.FLAG_fullQualifiedNameOfTestClassToRun, "junit5.ParametrizedTest",
                         ParserOptions.FLAG_testMethodNamesToRun, "test"
                 }
@@ -99,7 +102,8 @@ public class JUnit5JacocoRunnerTest extends AbstractTest {
     public void testMethodDetailedCoverageDetail() throws Exception {
 
         JUnit5JacocoRunner.main(new String[]{
-                        ParserOptions.FLAG_pathToCompiledClassesOfTheProject, TEST_PROJECT_CLASSES,
+                        ParserOptions.FLAG_pathToCompiledClassesOfTheProject, SOURCE_PROJECT_CLASSES,
+                        ParserOptions.FLAG_pathToCompiledTestClassesOfTheProject, TEST_PROJECT_CLASSES,
                         ParserOptions.FLAG_fullQualifiedNameOfTestClassToRun, "junit5.TestSuiteExample",
                         ParserOptions.FLAG_coverage_detail, ParserOptions.CoverageTransformerDetail.METHOD_DETAIL.name(),
                 }

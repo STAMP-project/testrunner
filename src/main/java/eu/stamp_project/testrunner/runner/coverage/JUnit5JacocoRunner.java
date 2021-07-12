@@ -6,7 +6,6 @@ import eu.stamp_project.testrunner.listener.CoveredTestResult;
 import eu.stamp_project.testrunner.listener.junit5.JUnit5Coverage;
 import eu.stamp_project.testrunner.runner.JUnit5Runner;
 import eu.stamp_project.testrunner.runner.ParserOptions;
-import eu.stamp_project.testrunner.utils.ConstantsHelper;
 
 import java.util.List;
 
@@ -18,16 +17,14 @@ import java.util.List;
 public class JUnit5JacocoRunner extends JacocoRunner {
 
 	
-    public JUnit5JacocoRunner(String classesDirectory, String testClassesDirectory, CoverageTransformer coverageTransformer) {
+    public JUnit5JacocoRunner(List<String> classesDirectory, List<String> testClassesDirectory, CoverageTransformer coverageTransformer) {
         super(classesDirectory, testClassesDirectory, coverageTransformer);
     }
     
-    public JUnit5JacocoRunner(String classesDirectory, String testClassesDirectory, List<String> blackList, CoverageTransformer coverageTransformer) {
+    public JUnit5JacocoRunner(List<String> classesDirectory, List<String> testClassesDirectory, List<String> blackList, CoverageTransformer coverageTransformer) {
         super(classesDirectory, testClassesDirectory, blackList, coverageTransformer);;
     }
 
-    
-    
     /**
      * The entry method to execute junit tests.
      * This method is not meant to be used directly, but rather using {@link EntryPoint}
@@ -35,30 +32,31 @@ public class JUnit5JacocoRunner extends JacocoRunner {
      */
     public static void main(String[] args) {
         final ParserOptions options = ParserOptions.parse(args);
-        final String[] splittedArgs0 = options.getPathToCompiledClassesOfTheProject().split(ConstantsHelper.PATH_SEPARATOR);
-        final String classesDirectory = splittedArgs0[0];
-        final String testClassesDirectory = splittedArgs0[1];
         final JacocoRunner jacocoRunner =
-                new JUnit5JacocoRunner(classesDirectory,
-                        testClassesDirectory,
+                new JUnit5JacocoRunner(
+                        options.getPathToCompiledClassesOfTheProject(),
+                        options.getPathToCompiledTestClassesOfTheProject(),
                         options.getBlackList(),
                         options.getCoverageTransformer()
                 );
         final String[] testClassesToRun = options.getFullQualifiedNameOfTestClassesToRun();
         if (testClassesToRun.length > 1) {
-            jacocoRunner.run(classesDirectory,
-                    testClassesDirectory,
+            jacocoRunner.run(
+                    options.getPathToCompiledClassesOfTheProject(),
+                    options.getPathToCompiledTestClassesOfTheProject(),
                     testClassesToRun
             ).save();
         } else {
             if (options.getTestMethodNamesToRun().length == 0) {
-                jacocoRunner.run(classesDirectory,
-                        testClassesDirectory,
+                jacocoRunner.run(
+                        options.getPathToCompiledClassesOfTheProject(),
+                        options.getPathToCompiledTestClassesOfTheProject(),
                         testClassesToRun
                 ).save();
             } else {
-                jacocoRunner.run(classesDirectory,
-                        testClassesDirectory,
+                jacocoRunner.run(
+                        options.getPathToCompiledClassesOfTheProject(),
+                        options.getPathToCompiledTestClassesOfTheProject(),
                         testClassesToRun[0],
                         options.getTestMethodNamesToRun()
                 ).save();

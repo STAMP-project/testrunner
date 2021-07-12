@@ -6,7 +6,6 @@ import eu.stamp_project.testrunner.listener.junit5.CoveredTestResultsPerJUnit5Te
 import eu.stamp_project.testrunner.listener.junit5.JUnit5TestResult;
 import eu.stamp_project.testrunner.runner.JUnit5Runner;
 import eu.stamp_project.testrunner.runner.ParserOptions;
-import eu.stamp_project.testrunner.utils.ConstantsHelper;
 import org.jacoco.core.runtime.RuntimeData;
 
 import java.util.Collections;
@@ -19,16 +18,16 @@ import java.util.List;
  */
 public class JUnit5JacocoRunnerCoveredResultPerTestMethod extends JacocoRunnerCoveredResultPerTestMethod {
 
-	public JUnit5JacocoRunnerCoveredResultPerTestMethod(String classesDirectory, String testClassesDirectory, CoverageTransformer coverageTransformer) {
+	public JUnit5JacocoRunnerCoveredResultPerTestMethod(List<String> classesDirectory, List<String> testClassesDirectory, CoverageTransformer coverageTransformer) {
 		super(classesDirectory, testClassesDirectory, coverageTransformer);
 	}
 
-	public JUnit5JacocoRunnerCoveredResultPerTestMethod(String classesDirectory, String testClassesDirectory, List<String> blackList, CoverageTransformer coverageTransformer) {
+	public JUnit5JacocoRunnerCoveredResultPerTestMethod(List<String> classesDirectory, List<String> testClassesDirectory, List<String> blackList, CoverageTransformer coverageTransformer) {
 		super(classesDirectory, testClassesDirectory, blackList, coverageTransformer);
 	}
 
 	@Override
-	protected CoveredTestResultPerTestMethod executeCoveredTestPerTestMethod(RuntimeData data, String classesDirectory, String[] testClassNames, String[] testMethodNames) {
+	protected CoveredTestResultPerTestMethod executeCoveredTestPerTestMethod(RuntimeData data, List<String> classesDirectory, String[] testClassNames, String[] testMethodNames) {
 		final CoveredTestResultsPerJUnit5TestMethod listener = new CoveredTestResultsPerJUnit5TestMethod(data, classesDirectory, coverageTransformer);
 		JUnit5Runner.run(
 				testClassNames,
@@ -42,16 +41,14 @@ public class JUnit5JacocoRunnerCoveredResultPerTestMethod extends JacocoRunnerCo
 
 	public static void main(String[] args) {
 		final ParserOptions options = ParserOptions.parse(args);
-		final String[] splittedArgs0 = options.getPathToCompiledClassesOfTheProject().split(ConstantsHelper.PATH_SEPARATOR);
-		final String classesDirectory = splittedArgs0[0];
-		final String testClassesDirectory = splittedArgs0[1];
 		new JUnit5JacocoRunnerCoveredResultPerTestMethod(
-				classesDirectory,
-				testClassesDirectory,
+				options.getPathToCompiledClassesOfTheProject(),
+				options.getPathToCompiledTestClassesOfTheProject(),
 				options.getBlackList(),
 				options.getCoverageTransformer()
-		).runCoveredTestResultPerTestMethod(classesDirectory,
-				testClassesDirectory,
+		).runCoveredTestResultPerTestMethod(
+				options.getPathToCompiledClassesOfTheProject(),
+				options.getPathToCompiledTestClassesOfTheProject(),
 				options.getFullQualifiedNameOfTestClassesToRun(),
 				options.getTestMethodNamesToRun()
 		).save();
