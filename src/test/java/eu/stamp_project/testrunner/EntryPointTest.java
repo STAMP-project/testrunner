@@ -335,11 +335,7 @@ public class EntryPointTest extends AbstractTest {
             Test the runCoverage() of EntryPoint.
                 It should return the CoverageResult with the instruction jUnit4Coverage computed by Jacoco.
          */
-        final String classpath = MAVEN_HOME + "org/jacoco/org.jacoco.core/0.7.9/org.jacoco.core-0.7.9.jar" + ConstantsHelper.PATH_SEPARATOR +
-                MAVEN_HOME + "org/ow2/asm/asm-debug-all/5.2/asm-debug-all-5.2.jar" + ConstantsHelper.PATH_SEPARATOR +
-                MAVEN_HOME + "commons-io/commons-io/2.5/commons-io-2.5.jar" + ConstantsHelper.PATH_SEPARATOR +
-                JUNIT_CP + ConstantsHelper.PATH_SEPARATOR + JUNIT5_CP;
-        ;
+        final String classpath = JUNIT_CP + ConstantsHelper.PATH_SEPARATOR + JUNIT5_CP;
 
         final Coverage coverage = EntryPoint.runCoverage(
                 classpath + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
@@ -358,11 +354,7 @@ public class EntryPointTest extends AbstractTest {
             Test the runCoverage() of EntryPoint.
                 It should return the CoverageResult with the instruction jUnit4Coverage computed by Jacoco.
          */
-        final String classpath = MAVEN_HOME + "org/jacoco/org.jacoco.core/0.7.9/org.jacoco.core-0.7.9.jar" + ConstantsHelper.PATH_SEPARATOR +
-                MAVEN_HOME + "org/ow2/asm/asm-debug-all/5.2/asm-debug-all-5.2.jar" + ConstantsHelper.PATH_SEPARATOR +
-                MAVEN_HOME + "commons-io/commons-io/2.5/commons-io-2.5.jar" + ConstantsHelper.PATH_SEPARATOR +
-                JUNIT_CP + ConstantsHelper.PATH_SEPARATOR + JUNIT5_CP;
-        ;
+        final String classpath = JUNIT_CP + ConstantsHelper.PATH_SEPARATOR + JUNIT5_CP;
 
         final Coverage coverage = EntryPoint.runCoverage(
                 classpath + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
@@ -381,10 +373,7 @@ public class EntryPointTest extends AbstractTest {
             Test the runCoverage() of EntryPoint.
                 It should return the CoverageResult with the instruction coverage computed by Jacoco.
          */
-        final String classpath = MAVEN_HOME + "org/jacoco/org.jacoco.core/0.7.9/org.jacoco.core-0.7.9.jar" + ConstantsHelper.PATH_SEPARATOR +
-                MAVEN_HOME + "org/ow2/asm/asm-debug-all/5.2/asm-debug-all-5.2.jar" + ConstantsHelper.PATH_SEPARATOR +
-                MAVEN_HOME + "commons-io/commons-io/2.5/commons-io-2.5.jar" + ConstantsHelper.PATH_SEPARATOR +
-                JUNIT_CP + ConstantsHelper.PATH_SEPARATOR + JUNIT5_CP;
+        final String classpath = JUNIT_CP + ConstantsHelper.PATH_SEPARATOR + JUNIT5_CP;
 
         final Coverage coverage = EntryPoint.runCoverage(
                 classpath + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
@@ -402,11 +391,7 @@ public class EntryPointTest extends AbstractTest {
         /*
             Test the runCoverage() of EntryPoint with blacklisted test methods.
          */
-        final String classpath = MAVEN_HOME + "org/jacoco/org.jacoco.core/0.7.9/org.jacoco.core-0.7.9.jar" + ConstantsHelper.PATH_SEPARATOR +
-                MAVEN_HOME + "org/ow2/asm/asm-debug-all/5.2/asm-debug-all-5.2.jar" + ConstantsHelper.PATH_SEPARATOR +
-                MAVEN_HOME + "commons-io/commons-io/2.5/commons-io-2.5.jar" + ConstantsHelper.PATH_SEPARATOR +
-                JUNIT_CP + ConstantsHelper.PATH_SEPARATOR + JUNIT5_CP;
-        ;
+        final String classpath = JUNIT_CP + ConstantsHelper.PATH_SEPARATOR + JUNIT5_CP;
 
         EntryPoint.blackList.add("test8");
         EntryPoint.blackList.add("test6");
@@ -432,10 +417,7 @@ public class EntryPointTest extends AbstractTest {
             Test the runCoveragePerTestMethods() of EntryPoint.
                 It should return the CoverageResult with the instruction coverage computed by Jacoco.
          */
-        final String classpath = MAVEN_HOME + "org/jacoco/org.jacoco.core/0.7.9/org.jacoco.core-0.7.9.jar" + ConstantsHelper.PATH_SEPARATOR +
-                MAVEN_HOME + "org/ow2/asm/asm-debug-all/5.2/asm-debug-all-5.2.jar" + ConstantsHelper.PATH_SEPARATOR +
-                MAVEN_HOME + "commons-io/commons-io/2.5/commons-io-2.5.jar" + ConstantsHelper.PATH_SEPARATOR +
-                JUNIT_CP + ConstantsHelper.PATH_SEPARATOR + JUNIT5_CP;
+        final String classpath = JUNIT_CP + ConstantsHelper.PATH_SEPARATOR + JUNIT5_CP;
 
         final CoveragePerTestMethod coveragePerTestMethod = EntryPoint.runCoveragePerTestMethods(
                 classpath + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
@@ -457,10 +439,7 @@ public class EntryPointTest extends AbstractTest {
             Test the runCoveragePerTestMethods() of EntryPoint.
                 It should return the CoverageResult with the instruction coverage computed by Jacoco.
          */
-        final String classpath = MAVEN_HOME + "org/jacoco/org.jacoco.core/0.7.9/org.jacoco.core-0.7.9.jar" + ConstantsHelper.PATH_SEPARATOR +
-                MAVEN_HOME + "org/ow2/asm/asm-debug-all/5.2/asm-debug-all-5.2.jar" + ConstantsHelper.PATH_SEPARATOR +
-                MAVEN_HOME + "commons-io/commons-io/2.5/commons-io-2.5.jar" + ConstantsHelper.PATH_SEPARATOR +
-                JUNIT_CP + ConstantsHelper.PATH_SEPARATOR + JUNIT5_CP;
+        final String classpath = JUNIT_CP + ConstantsHelper.PATH_SEPARATOR + JUNIT5_CP;
 
         final CoveragePerTestMethod coveragePerTestMethod = EntryPoint.runCoveragePerTestMethods(
                 classpath + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
@@ -469,6 +448,7 @@ public class EntryPointTest extends AbstractTest {
                 new String[]{"example.TestSuiteExample#test3", "example.TestSuiteExample2#test3"}
         );
 
+        System.out.println(coveragePerTestMethod);
         assertEquals(23, coveragePerTestMethod.getCoverageOf("example.TestSuiteExample#test3").getInstructionsCovered());
         assertEquals(NUMBER_OF_INSTRUCTIONS, coveragePerTestMethod.getCoverageOf("example.TestSuiteExample#test3").getInstructionsTotal());
         assertEquals(23, coveragePerTestMethod.getCoverageOf("example.TestSuiteExample2#test3").getInstructionsCovered());
@@ -530,10 +510,7 @@ public class EntryPointTest extends AbstractTest {
             Test the runCoveredTestResultPerTestMethods() of EntryPoint.
                 It should return the CoveredTestResult with the instruction coverage computed by Jacoco.
          */
-        final String classpath = MAVEN_HOME + "org/jacoco/org.jacoco.core/0.7.9/org.jacoco.core-0.7.9.jar" + ConstantsHelper.PATH_SEPARATOR +
-                MAVEN_HOME + "org/ow2/asm/asm-debug-all/5.2/asm-debug-all-5.2.jar" + ConstantsHelper.PATH_SEPARATOR +
-                MAVEN_HOME + "commons-io/commons-io/2.5/commons-io-2.5.jar" + ConstantsHelper.PATH_SEPARATOR +
-                JUNIT_CP + ConstantsHelper.PATH_SEPARATOR + JUNIT5_CP;
+        final String classpath = JUNIT_CP + ConstantsHelper.PATH_SEPARATOR + JUNIT5_CP;
 
         final CoveredTestResultPerTestMethod coveredTestResultPerTestMethod = EntryPoint.runCoveredTestResultPerTestMethods(
                 classpath + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
@@ -607,10 +584,7 @@ public class EntryPointTest extends AbstractTest {
             Test the runCoveredTestResultPerTestMethods() of EntryPoint.
                 It should return the CoveredTestResult with the instruction coverage computed by Jacoco.
          */
-        final String classpath = MAVEN_HOME + "org/jacoco/org.jacoco.core/0.7.9/org.jacoco.core-0.7.9.jar" + ConstantsHelper.PATH_SEPARATOR +
-                MAVEN_HOME + "org/ow2/asm/asm-debug-all/5.2/asm-debug-all-5.2.jar" + ConstantsHelper.PATH_SEPARATOR +
-                MAVEN_HOME + "commons-io/commons-io/2.5/commons-io-2.5.jar" + ConstantsHelper.PATH_SEPARATOR +
-                JUNIT_CP + ConstantsHelper.PATH_SEPARATOR + JUNIT5_CP;
+        final String classpath = JUNIT_CP + ConstantsHelper.PATH_SEPARATOR + JUNIT5_CP;
 
         final CoveredTestResultPerTestMethod coveredTestResultPerTestMethod = EntryPoint.runCoveredTestResultPerTestMethods(
                 classpath + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
@@ -647,10 +621,7 @@ public class EntryPointTest extends AbstractTest {
             Test the runCoveredTestResultPerTestMethods() of EntryPoint.
                 It should return the CoveredTestResultPerTestMethod with the instruction coverage computed by Jacoco.
          */
-        final String classpath = MAVEN_HOME + "org/jacoco/org.jacoco.core/0.7.9/org.jacoco.core-0.7.9.jar" + ConstantsHelper.PATH_SEPARATOR +
-                MAVEN_HOME + "org/ow2/asm/asm-debug-all/5.2/asm-debug-all-5.2.jar" + ConstantsHelper.PATH_SEPARATOR +
-                MAVEN_HOME + "commons-io/commons-io/2.5/commons-io-2.5.jar" + ConstantsHelper.PATH_SEPARATOR +
-                JUNIT_CP + ConstantsHelper.PATH_SEPARATOR + JUNIT5_CP;
+        final String classpath = JUNIT_CP + ConstantsHelper.PATH_SEPARATOR + JUNIT5_CP;
 
         final CoveredTestResultPerTestMethod coveredTestResultPerTestMethod = EntryPoint.runCoveredTestResultPerTestMethods(
                 classpath + ConstantsHelper.PATH_SEPARATOR + TEST_PROJECT_CLASSES,
